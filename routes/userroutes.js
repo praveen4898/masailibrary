@@ -2,6 +2,8 @@ const express=require("express")
 const bcrypt=require("bcrypt")
 const { UserModel } = require("../model/usermodel")
 const jwt=require("jsonwebtoken")
+const { auth } = require("../middleware/authmiddlware")
+const { OrderModel } = require("../model/ordermodel")
 const userRoute=express.Router()
 
 
@@ -36,6 +38,44 @@ userRoute.post("/login",async(req,res)=>{
         res.status(500).send({"msg":"Invalid credntials"})
     }
 })
+
+
+
+//to make order by the user 
+userRoute.post('/', auth, async (req, res) => {
+    try {
+        const { books, totalAmount } = req.body;
+        const order = new OrderModel({
+            user: req.user._id,
+            books: books, 
+            totalAmount: totalAmount
+        });
+        
+        await order.save();
+        
+        res.status(201).send({ "msg": "Order placed successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ "msg": "Error placing order" });
+    }
+});
+
+
+// GET /api/orders
+userRoute.get('/', auth, async (req, res) => {
+    try {
+        if (!req.user.isAdmin) {
+            return res.status(403).send({ "msg": "You are not authorized to access this page" });
+        }
+        const orders = await OrderModel.find().populate('user').populate('books');
+        
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ "msg": "Error fetching orders" });
+    }
+});
+
 
 
 

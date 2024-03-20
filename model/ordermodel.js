@@ -1,22 +1,14 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema.Types;
 
 const orderSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  books: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Book',
-    required: true
-  }],
-  totalAmount: {
-    type: Number,
-    required: true
-  }
+    user: { type: ObjectId, ref: 'UserModel', required: true },
+    books: [{ type: ObjectId, ref: 'BookModel', required: true }],
+    totalAmount: { type: Number, required: true }
 });
 
-const Order = mongoose.model('Order', orderSchema);
+const OrderModel = mongoose.model('Order', orderSchema);
 
-module.exports = Order;
+module.exports = {
+    OrderModel
+};

@@ -1,6 +1,7 @@
 const express=require("express")
 const { Connection } = require("./config/db")
 const { userRoute } = require("./routes/userroutes")
+const { bookRoute } = require("./routes/bookroutes")
 
 require("dotenv").config()
 
@@ -13,6 +14,8 @@ app.get("/masai",(req,res)=>{
 })
 
 app.use("/user",userRoute)
+
+app.use("/books",bookRoute)
 
 app.listen(process.env.PORT,async(req,res)=>{
     try {
