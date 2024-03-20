@@ -4,6 +4,7 @@ const { UserModel } = require("../model/usermodel")
 const jwt=require("jsonwebtoken")
 const { auth } = require("../middleware/authmiddlware")
 const { OrderModel } = require("../model/ordermodel")
+const { access } = require("../middleware/accessmiddleware")
 const userRoute=express.Router()
 
 
@@ -62,7 +63,7 @@ userRoute.post('/', auth, async (req, res) => {
 
 
 // GET /api/orders
-userRoute.get('/', auth, async (req, res) => {
+userRoute.get('/', auth,access(true), async(req, res) => {
     try {
         if (!req.user.isAdmin) {
             return res.status(403).send({ "msg": "You are not authorized to access this page" });
